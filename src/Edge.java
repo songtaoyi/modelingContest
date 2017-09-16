@@ -29,4 +29,13 @@ public class Edge {
             return this.fromNodeIndex;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "fromNodeIndex=" + fromNodeIndex +
+                ", toNodeIndex=" + toNodeIndex +
+                ", length=" + length +
+                '}';
+    }
 }
