@@ -1,3 +1,5 @@
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,12 +40,20 @@ public class Graph {
     public void calculateShortestDistances(int source) {
         // node 0 as source
 
+        List<Integer> tmp = new ArrayList<>();
+//        for (int i = 0; i < this.nodes.length; i++){
+//            //nodes[i].setPath(null);
+//            nodes[i].setDistanceFromSource(Integer.MAX_VALUE);
+//            nodes[i].setPath(tmp);
+//        }
+
         this.nodes[source].setDistanceFromSource(0);
 
         nodes[source].getPath().add(source);
         int nextNode = source;
         // visit every node
         for (int i = 0; i < this.nodes.length; i++) {
+            //System.out.println("Count "+i);
             // loop around the edges of current node
             ArrayList<Edge> currentNodeEdges = this.nodes[nextNode].getEdges();
             for (int joinedEdge = 0; joinedEdge < currentNodeEdges.size(); joinedEdge++) {
@@ -60,6 +70,7 @@ public class Graph {
                     }
                 }
             }
+            //System.out.println(currentNodeEdges.toString());
             // all neighbours checked so node visited
             nodes[nextNode].setVisited(true);
             // next node must be with shortest distance
@@ -88,6 +99,22 @@ public class Graph {
             output +=("\n" + nodes[i].getPath().toString());
         }
         System.out.println(output);
+    }
+    public double[] getDistance(){
+        double [] distanceList = new double[130];
+        for(int i=0;i<130;i++){
+
+            distanceList[i] = nodes[i].getDistanceFromSource();
+            //System.out.println(distanceList[i]);
+            //System.out.println(distanceList.toString());
+            //System.out.println(i);
+        }
+        //System.out.println("hi");
+        //System.out.println(distanceList.toString());
+//        for(int i=0;i<130;i++){
+//            System.out.println("dis = "+i+" "+distanceList[i]);
+//        }
+        return distanceList;
     }
     public Node[] getNodes() {
         return nodes;
