@@ -116,6 +116,15 @@ public class Graph {
 //        }
         return distanceList;
     }
+
+    public List<Integer>[] getPath(){
+        List<Integer> pathList []= new ArrayList[130];
+        for(int i=0;i<130;i++){
+            pathList[i] = nodes[i].getPath();
+        }
+        return pathList;
+    }
+
     public Node[] getNodes() {
         return nodes;
     }
