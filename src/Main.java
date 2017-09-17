@@ -8,5 +8,6 @@ public class Main {
         //countTime.printPlan();
         GraphForA graphForA =new GraphForA();
         System.out.println(graphForA.getPath(0,1).toString());
+        countTime.outputTheLineToFile();
     }
 }
