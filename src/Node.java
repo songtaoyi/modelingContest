@@ -6,6 +6,7 @@ public class Node {
     private List<Integer> path=new ArrayList<Integer>();
     private boolean visited;
     private ArrayList<Edge> edges = new ArrayList<Edge>(); // now we must create edges
+
     public double getDistanceFromSource() {
         return distanceFromSource;
     }

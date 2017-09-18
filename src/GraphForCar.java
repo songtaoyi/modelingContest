@@ -8,7 +8,7 @@ public class GraphForCar {
     private List<Integer> pathMatrix [][] = new ArrayList[130][130];
     private ParseNodeName parseNodeName = new ParseNodeName();
     private Edge[] edges;
-
+    private Node [] nodes;
 
     public GraphForCar(String fileName){
         edges = inputFromFile(fileName);
@@ -42,6 +42,10 @@ public class GraphForCar {
         }
         return edges;
     }
+
+//    public int[] getPointCoordinate(int nodeNumber){
+//        nodeNumber
+//    }
 
     public double calTime(int formIndex, int toIndex) {
         return distance[formIndex][toIndex];

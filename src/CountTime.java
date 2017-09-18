@@ -1,5 +1,6 @@
 import java.io.*;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CountTime {
     private int[][] plan =new int [24][4];
@@ -8,6 +9,7 @@ public class CountTime {
     private GraphForA graphForA= new GraphForA();
     private GraphForB graphForB= new GraphForB();
     private GraphForC graphForC= new GraphForC();
+    private NodesInfo nodesInfo =new NodesInfo();
 
     public void setPlan(int[][] plan) {
         this.plan = plan;
@@ -83,22 +85,151 @@ public class CountTime {
         return time;
     }
 
-    public void outputTheLineToFile(){
+
+    public ArrayList<PathTimeRecord> [] getPathInfo() {
+        ArrayList[] pathTimeRecordList = new ArrayList[24];
+        for (int i = 0; i < 24; i++) {
+            if (i < 6) {
+                pathTimeRecordList[i] = new ArrayList<PathTimeRecord>();
+                graphForA.calTime(plan[i][0], plan[i][1]);
+                double time = 0;
+                for (int count = 0; count < 3; count++) {
+                    List<Integer> path = graphForA.getPath(plan[i][0], plan[i][1]);
+                    if (count == 1)
+                        path = graphForA.getPath(plan[i][1], plan[i][2]);
+                    if (count == 2)
+                        path = graphForA.getPath(plan[i][2], plan[i][3]);
+                    for (int j = 0; j < path.size() - 1; j++) {
+                        PathTimeRecord pathTimeRecord = new PathTimeRecord();
+                        pathTimeRecord.setFromIndex(path.get(j));
+                        pathTimeRecord.setToIndex(path.get(j + 1));
+                        pathTimeRecord.setFromTime(time);
+                        time += graphForA.calTime(path.get(j), path.get(j + 1));
+                        pathTimeRecord.setArriveTime(time);
+                        pathTimeRecordList[i].add(pathTimeRecord);
+                    }
+                }
+            }
+            if (i>=6 && i < 12) {
+                pathTimeRecordList[i] = new ArrayList<PathTimeRecord>();
+                graphForA.calTime(plan[i][0], plan[i][1]);
+                double time = 0;
+                for (int count = 0; count < 3; count++) {
+                    List<Integer> path = graphForB.getPath(plan[i][0], plan[i][1]);
+                    if (count == 1)
+                        path = graphForB.getPath(plan[i][1], plan[i][2]);
+                    if (count == 2)
+                        path = graphForB.getPath(plan[i][2], plan[i][3]);
+                    for (int j = 0; j < path.size() - 1; j++) {
+                        PathTimeRecord pathTimeRecord = new PathTimeRecord();
+                        pathTimeRecord.setFromIndex(path.get(j));
+                        pathTimeRecord.setToIndex(path.get(j + 1));
+                        pathTimeRecord.setFromTime(time);
+                        time += graphForB.calTime(path.get(j), path.get(j + 1));
+                        pathTimeRecord.setArriveTime(time);
+                        pathTimeRecordList[i].add(pathTimeRecord);
+                    }
+                }
+            }
+            if (i>=12 && i < 24) {
+                pathTimeRecordList[i] = new ArrayList<PathTimeRecord>();
+                graphForA.calTime(plan[i][0], plan[i][1]);
+                double time = 0;
+                for (int count = 0; count < 3; count++) {
+                    List<Integer> path = graphForC.getPath(plan[i][0], plan[i][1]);
+                    if (count == 1)
+                        path = graphForC.getPath(plan[i][1], plan[i][2]);
+                    if (count == 2)
+                        path = graphForC.getPath(plan[i][2], plan[i][3]);
+                    for (int j = 0; j < path.size() - 1; j++) {
+                        PathTimeRecord pathTimeRecord = new PathTimeRecord();
+                        pathTimeRecord.setFromIndex(path.get(j));
+                        pathTimeRecord.setToIndex(path.get(j + 1));
+                        pathTimeRecord.setFromTime(time);
+                        time += graphForC.calTime(path.get(j), path.get(j + 1));
+                        pathTimeRecord.setArriveTime(time);
+                        pathTimeRecordList[i].add(pathTimeRecord);
+                    }
+                }
+            }
+        }
+        return pathTimeRecordList;
+    }
+
+    public void outputPathDataToFileForMatlabDraw(){
         try {
-            String carName = "A0";
-            File writename = new File("Attachment2.txt");
+            File writename = new File("path-FirstPart.txt");
             writename.createNewFile();
             BufferedWriter out = new BufferedWriter(new FileWriter(writename));
-            out.write("The plan\n");
-            for(int i=0;i<24;i++){
-                out.write(carName(i)+"\t");
+            out.write("The path From waiting area to first shoot\n");
+            for(int i=0;i<24;i++) {
                 //out.write();
+                List<Integer> path = graphForA.getPath(plan[i][0], plan[i][1]);
+                out.write(carName(i) + " x Coordinate\t");
+                for (int j = 0; j < path.size(); j++) {
+                    out.write(nodesInfo.getCoordinate(path.get(j))[0] + "\t");
+                }
+                out.write("\n" + carName(i) + " y Coordinate\t");
+                for (int j = 0; j < path.size(); j++) {
+                    out.write(nodesInfo.getCoordinate(path.get(j))[1] + "\t");
+                }
+                out.write("\n");
             }
             out.flush();
             out.close();
         }catch (Exception e){
             System.out.println("EXCEPIYON !!!");
         }
+        /********************************************************************************************/
+        try {
+            File writename = new File("path-SecondPart.txt");
+            writename.createNewFile();
+            BufferedWriter out = new BufferedWriter(new FileWriter(writename));
+            out.write("The path From first shoot to re-load area\n");
+            for(int i=0;i<24;i++) {
+                //out.write();
+                List<Integer> path = graphForA.getPath(plan[i][1], plan[i][2]);
+                out.write(carName(i) + " x Coordinate\t");
+                for (int j = 0; j < path.size(); j++) {
+                    out.write(nodesInfo.getCoordinate(path.get(j))[0] + "\t");
+                }
+                out.write("\n" + carName(i) + " y Coordinate\t");
+                for (int j = 0; j < path.size(); j++) {
+                    out.write(nodesInfo.getCoordinate(path.get(j))[1] + "\t");
+                }
+                out.write("\n");
+            }
+            out.flush();
+            out.close();
+        }catch (Exception e){
+            System.out.println("EXCEPIYON !!!");
+        }
+        /********************************************************************************************/
+        try {
+            File writename = new File("path-ThirdPart.txt");
+            writename.createNewFile();
+            BufferedWriter out = new BufferedWriter(new FileWriter(writename));
+            out.write("The path from re-load area to second shoot\n");
+            for(int i=0;i<24;i++) {
+                //out.write();
+                List<Integer> path = graphForA.getPath(plan[i][2], plan[i][3]);
+                out.write(carName(i) + " x Coordinate\t");
+                for (int j = 0; j < path.size(); j++) {
+                    out.write(nodesInfo.getCoordinate(path.get(j))[0] + "\t");
+                }
+                out.write("\n" + carName(i) + " y Coordinate\t");
+                for (int j = 0; j < path.size(); j++) {
+                    out.write(nodesInfo.getCoordinate(path.get(j))[1] + "\t");
+                }
+                out.write("\n");
+            }
+            out.flush();
+            out.close();
+        }catch (Exception e){
+            System.out.println("EXCEPIYON !!!");
+        }
+
+
     }
     String carName(int number){
         switch(number){
@@ -149,7 +280,7 @@ public class CountTime {
             case 22:
                 return "C11";
             case 23:
-                return "C02";
+                return "C12";
         }
         return null;
     }

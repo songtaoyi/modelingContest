@@ -47,7 +47,6 @@ public class ParseNodeName {
     }
     public String getStringFromInt(int index){
         return nodeIntToString[index];
-
     }
     public int getIntFromString(String name){
         return nodeStringtoIndex.get(name);
