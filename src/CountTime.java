@@ -86,75 +86,56 @@ public class CountTime {
     }
 
 
-    public ArrayList<PathTimeRecord> [] getPathInfo() {
+    public ArrayList<PathTimeRecord> [] getPathInfo(int path1OrPath2OrPath3) {
         ArrayList[] pathTimeRecordList = new ArrayList[24];
         for (int i = 0; i < 24; i++) {
+            List<Integer> path =new ArrayList<Integer>();
             if (i < 6) {
+                path = graphForA.getPath(plan[i][path1OrPath2OrPath3-1], plan[i][path1OrPath2OrPath3]);
+            }
+            if(i>=6 &&i<12) {
+                path = graphForB.getPath(plan[i][path1OrPath2OrPath3-1], plan[i][path1OrPath2OrPath3]);
+            }
+            if(i>=12 && i<24) {
+                path = graphForC.getPath(plan[i][path1OrPath2OrPath3-1], plan[i][path1OrPath2OrPath3]);
+            }
                 pathTimeRecordList[i] = new ArrayList<PathTimeRecord>();
-                graphForA.calTime(plan[i][0], plan[i][1]);
                 double time = 0;
-                for (int count = 0; count < 3; count++) {
-                    List<Integer> path = graphForA.getPath(plan[i][0], plan[i][1]);
-                    if (count == 1)
-                        path = graphForA.getPath(plan[i][1], plan[i][2]);
-                    if (count == 2)
-                        path = graphForA.getPath(plan[i][2], plan[i][3]);
-                    for (int j = 0; j < path.size() - 1; j++) {
-                        PathTimeRecord pathTimeRecord = new PathTimeRecord();
-                        pathTimeRecord.setFromIndex(path.get(j));
-                        pathTimeRecord.setToIndex(path.get(j + 1));
-                        pathTimeRecord.setFromTime(time);
+                for (int j = 0; j < path.size() - 1; j++) {
+                    PathTimeRecord pathTimeRecord = new PathTimeRecord();
+                    pathTimeRecord.setFromIndex(path.get(j));
+                    pathTimeRecord.setToIndex(path.get(j + 1));
+                    pathTimeRecord.setFromTime(time);
+                    if (i < 6) {
                         time += graphForA.calTime(path.get(j), path.get(j + 1));
-                        pathTimeRecord.setArriveTime(time);
-                        pathTimeRecordList[i].add(pathTimeRecord);
                     }
-                }
-            }
-            if (i>=6 && i < 12) {
-                pathTimeRecordList[i] = new ArrayList<PathTimeRecord>();
-                graphForA.calTime(plan[i][0], plan[i][1]);
-                double time = 0;
-                for (int count = 0; count < 3; count++) {
-                    List<Integer> path = graphForB.getPath(plan[i][0], plan[i][1]);
-                    if (count == 1)
-                        path = graphForB.getPath(plan[i][1], plan[i][2]);
-                    if (count == 2)
-                        path = graphForB.getPath(plan[i][2], plan[i][3]);
-                    for (int j = 0; j < path.size() - 1; j++) {
-                        PathTimeRecord pathTimeRecord = new PathTimeRecord();
-                        pathTimeRecord.setFromIndex(path.get(j));
-                        pathTimeRecord.setToIndex(path.get(j + 1));
-                        pathTimeRecord.setFromTime(time);
+                    if(i>=6 &&i<12) {
                         time += graphForB.calTime(path.get(j), path.get(j + 1));
-                        pathTimeRecord.setArriveTime(time);
-                        pathTimeRecordList[i].add(pathTimeRecord);
                     }
-                }
-            }
-            if (i>=12 && i < 24) {
-                pathTimeRecordList[i] = new ArrayList<PathTimeRecord>();
-                graphForA.calTime(plan[i][0], plan[i][1]);
-                double time = 0;
-                for (int count = 0; count < 3; count++) {
-                    List<Integer> path = graphForC.getPath(plan[i][0], plan[i][1]);
-                    if (count == 1)
-                        path = graphForC.getPath(plan[i][1], plan[i][2]);
-                    if (count == 2)
-                        path = graphForC.getPath(plan[i][2], plan[i][3]);
-                    for (int j = 0; j < path.size() - 1; j++) {
-                        PathTimeRecord pathTimeRecord = new PathTimeRecord();
-                        pathTimeRecord.setFromIndex(path.get(j));
-                        pathTimeRecord.setToIndex(path.get(j + 1));
-                        pathTimeRecord.setFromTime(time);
+                    if(i>=12 && i<24) {
                         time += graphForC.calTime(path.get(j), path.get(j + 1));
-                        pathTimeRecord.setArriveTime(time);
-                        pathTimeRecordList[i].add(pathTimeRecord);
                     }
+                    pathTimeRecord.setArriveTime(time);
+                    pathTimeRecordList[i].add(pathTimeRecord);
                 }
             }
-        }
         return pathTimeRecordList;
     }
+
+    public double [] getPathTotalTime(ArrayList<PathTimeRecord> [] arrayListsOfPathTimeRecord){
+        double[] time = new double[arrayListsOfPathTimeRecord.length];
+        for(int i=0;i<arrayListsOfPathTimeRecord.length;i++){
+            time[i] = arrayListsOfPathTimeRecord[i].get(arrayListsOfPathTimeRecord[i].size()-1).getArriveTime();
+        }
+        return time;
+    }
+    public void printPathTimeList(ArrayList<PathTimeRecord> [] arrayListsOfPathTimeRecord){
+        for(int i=0;i<arrayListsOfPathTimeRecord.length;i++){
+            System.out.print("Path of car "+i+" : ");
+            System.out.println(arrayListsOfPathTimeRecord[i].toString());
+        }
+    }
+
 
     public void outputPathDataToFileForMatlabDraw(){
         try {

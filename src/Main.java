@@ -4,22 +4,27 @@ public class Main {
     public static void main(String[] args){
         //int[][] points = Problem1.distancePoints();
         CountTime countTime= new CountTime();
+        Scheduling scheduling = new Scheduling();
+        DealWithCollision dealWithCollision =new DealWithCollision();
         //countTime.setPlan(points);
         countTime.setPlanFromFile();
-        System.out.println("time = "+ countTime.naiveCalTime());
+        //System.out.println("time = "+ countTime.naiveCalTime());
         //countTime.printPlan();
-        GraphForA graphForA =new GraphForA();
-        //System.out.println(graphForA.getPath(0,1).toString());
-        // ;
-        NodesInfo nodesInfo =new NodesInfo();
-        //System.out.println(nodesInfo.getCoordinate(1)[0]+"   "+nodesInfo.getCoordinate(1)[1]);
-        ArrayList<PathTimeRecord>[] pathTimeRecordList = countTime.getPathInfo();
-        System.out.println(pathTimeRecordList.length);
-        System.out.println(pathTimeRecordList[1].toString());
-        double time =0;
-        for(int i=0;i<24;i++){
-            time+=pathTimeRecordList[i].get(pathTimeRecordList[i].size()-1).getArriveTime();
+        ArrayList<PathTimeRecord>[] pathTimeRecordList = countTime.getPathInfo(1);
+
+        //countTime.printPathTimeList(pathTimeRecordList);
+
+        scheduling.schedulingByInverseOrder(pathTimeRecordList);
+//        System.out.println("#############");
+//        countTime.printPathTimeList(pathTimeRecordList);
+
+        //dealWithCollision.printquery();
+        for(int i=0;i<24;i++) {
+            dealWithCollision.recordPathTimeByInverseOrder(pathTimeRecordList[i]);
         }
-        System.out.println(time/60);
+
+        dealWithCollision.printEdgeTrafficInfos();
+
+
     }
 }
